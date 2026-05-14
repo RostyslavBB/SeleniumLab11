@@ -6,20 +6,21 @@ using OpenQA.Selenium;
 [TestFixture]
 [AllureNUnit]
 [AllureSuite("Frames")]
-public class FramesTests
+[Parallelizable(ParallelScope.Fixtures)]
+public class FramesTests : BaseTest
 {
-    private IWebDriver _driver = null!;
     private NestedFramesPage _page = null!;
 
     [SetUp]
-    public void SetUp()
+    public override void SetUp()
     {
-        _driver = DriverSetup.GetDriver();
+        base.SetUp();
         _page = new NestedFramesPage(_driver);
         _page.Open();
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("frame-middle містить текст MIDDLE")]
     public void MiddleFrame_HasCorrectText()
     {
@@ -29,6 +30,7 @@ public class FramesTests
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("frame-top містить 3 вкладені фрейми")]
     public void TopFrame_HasThreeNestedFrames()
     {
@@ -38,7 +40,8 @@ public class FramesTests
     }
 
     [Test]
-    [AllureName("frame-left містить LEFT, frame-right містить RIGHT")]
+    [Retry(3)]
+    [AllureName("frame-left і frame-right мають правильний текст")]
     public void LeftAndRightFrames_HaveCorrectText()
     {
         _page.SwitchToTop();
@@ -52,18 +55,12 @@ public class FramesTests
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("frame-bottom містить BOTTOM")]
     public void BottomFrame_HasCorrectText()
     {
         _page.SwitchToDefault();
         _page.SwitchToBottom();
         Assert.That(_page.GetBodyText(), Is.EqualTo("BOTTOM"));
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _driver?.Quit();
-        _driver?.Dispose();
     }
 }

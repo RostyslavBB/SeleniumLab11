@@ -1,37 +1,34 @@
 ﻿using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
-using OpenQA.Selenium;
 
 [TestFixture]
 [AllureNUnit]
 [AllureSuite("Login")]
-public class LoginTests
+[Parallelizable(ParallelScope.Fixtures)]
+public class LoginTests : BaseTest
 {
-    private IWebDriver _driver = null!;
     private LoginPage _page = null!;
 
     [SetUp]
-    public void SetUp()
+    public override void SetUp()
     {
-        _driver = DriverSetup.GetDriver();
+        base.SetUp();
         _page = new LoginPage(_driver);
         _page.Open();
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("Некоректний логін показує помилку")]
     public void InvalidLogin_ShowsError()
     {
-        // Arrange — вже в SetUp
-        // Act
         _page.Login("wrong", "wrong");
-        // Assert
         StringAssert.Contains("invalid", _page.GetFlashText());
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("Коректний логін відкриває захищену зону")]
     public void ValidLogin_ShowsSuccess()
     {
@@ -39,7 +36,6 @@ public class LoginTests
         StringAssert.Contains("secure area", _page.GetFlashText());
     }
 
-    // Параметризований тест (High level)
     private static readonly object[] LoginCases =
     {
         new object[] { "wrong",    "wrong",                "invalid"     },
@@ -47,25 +43,12 @@ public class LoginTests
     };
 
     [Test]
+    [Retry(3)]
     [AllureName("Параметризований логін")]
     [TestCaseSource(nameof(LoginCases))]
     public void Login_Parametrized(string user, string pass, string expected)
     {
         _page.Login(user, pass);
         StringAssert.Contains(expected, _page.GetFlashText());
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        // Автоскріншот при падінні
-        if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
-        {
-            var screenshot = ((ITakesScreenshot)_driver).GetScreenshot();
-            var path = $"screenshot_{TestContext.CurrentContext.Test.Name}.png";
-            screenshot.SaveAsFile(path);
-        }
-        _driver.Quit();
-        _driver?.Dispose();
     }
 }

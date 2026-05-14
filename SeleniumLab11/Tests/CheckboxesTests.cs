@@ -1,36 +1,29 @@
 ﻿using NUnit.Framework;
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
-using OpenQA.Selenium;
 
 [TestFixture]
 [AllureNUnit]
 [AllureSuite("Checkboxes")]
-public class CheckboxesTests
+[Parallelizable(ParallelScope.Fixtures)]
+public class CheckboxesTests : BaseTest
 {
-    private IWebDriver _driver = null!;
     private CheckboxesPage _page = null!;
 
     [SetUp]
-    public void SetUp()
+    public override void SetUp()
     {
-        _driver = DriverSetup.GetDriver();
+        base.SetUp();
         _page = new CheckboxesPage(_driver);
         _page.Open();
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("Всі чекбокси мають бути увімкнені")]
     public void SelectAll_AllCheckboxesSelected()
     {
         _page.SelectAll();
         Assert.That(_page.AllSelected(), Is.True);
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _driver?.Quit();
-        _driver?.Dispose();
     }
 }

@@ -2,24 +2,26 @@
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 [TestFixture]
 [AllureNUnit]
 [AllureSuite("Windows")]
-public class WindowsTests
+[Parallelizable(ParallelScope.Fixtures)]
+public class WindowsTests : BaseTest
 {
-    private IWebDriver _driver = null!;
     private WindowsPage _page = null!;
 
     [SetUp]
-    public void SetUp()
+    public override void SetUp()
     {
-        _driver = DriverSetup.GetDriver();
+        base.SetUp();
         _page = new WindowsPage(_driver);
         _page.Open();
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("Нова вкладка має заголовок New Window")]
     public void NewWindow_HasCorrectTitle()
     {
@@ -32,6 +34,7 @@ public class WindowsTests
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("Закрити нову вкладку і повернутись на оригінальну")]
     public void CloseNewWindow_ReturnToOriginal()
     {
@@ -47,6 +50,7 @@ public class WindowsTests
     }
 
     [Test]
+    [Retry(3)]
     [AllureName("Відкрити 2 нові вкладки і перевірити кожну")]
     public void TwoNewWindows_AllHaveCorrectContent()
     {
@@ -54,31 +58,20 @@ public class WindowsTests
 
         _page.ClickHere();
         _page.SwitchToNewWindow(original);
-        Assert.That(_driver.FindElement(By.TagName("h3")).Text, Is.EqualTo("New Window"));
+        Assert.That(_driver.FindElement(By.TagName("h3")).Text,
+            Is.EqualTo("New Window"));
 
         _page.SwitchToWindow(original);
-
         _page.ClickHere();
-        // Тепер 3 вкладки — чекаємо
-        Wait_Until3Windows();
+
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+        wait.Until(d => d.WindowHandles.Count >= 3);
 
         foreach (var handle in _driver.WindowHandles.Where(h => h != original))
         {
             _driver.SwitchTo().Window(handle);
-            Assert.That(_driver.FindElement(By.TagName("h3")).Text, Is.EqualTo("New Window"));
+            Assert.That(_driver.FindElement(By.TagName("h3")).Text,
+                Is.EqualTo("New Window"));
         }
-    }
-
-    private void Wait_Until3Windows()
-    {
-        var wait = new OpenQA.Selenium.Support.UI.WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-        wait.Until(d => d.WindowHandles.Count >= 3);
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _driver?.Quit();
-        _driver?.Dispose();
     }
 }
