@@ -20,7 +20,7 @@ public class WindowsTests
     }
 
     [Test]
-    [AllureTitle("Нова вкладка має заголовок New Window")]
+    [AllureName("Нова вкладка має заголовок New Window")]
     public void NewWindow_HasCorrectTitle()
     {
         var original = _page.GetOriginalWindow();
@@ -32,7 +32,7 @@ public class WindowsTests
     }
 
     [Test]
-    [AllureTitle("Закрити нову вкладку і повернутись на оригінальну")]
+    [AllureName("Закрити нову вкладку і повернутись на оригінальну")]
     public void CloseNewWindow_ReturnToOriginal()
     {
         var original = _page.GetOriginalWindow();
@@ -47,7 +47,7 @@ public class WindowsTests
     }
 
     [Test]
-    [AllureTitle("Відкрити 2 нові вкладки і перевірити кожну")]
+    [AllureName("Відкрити 2 нові вкладки і перевірити кожну")]
     public void TwoNewWindows_AllHaveCorrectContent()
     {
         var original = _page.GetOriginalWindow();
