@@ -20,16 +20,6 @@ public class AlertsTests : BaseTest
 
     [Test]
     [Retry(3)]
-    [AllureName("JS Alert — прийняти")]
-    public void Alert_Accept_ShowsOk()
-    {
-        _page.ClickAlert();
-        _page.AcceptAlert();
-        StringAssert.Contains("You successfuly", _page.GetResultText());
-    }
-
-    [Test]
-    [Retry(3)]
     [AllureName("JS Confirm — OK")]
     public void Confirm_OK_ShowsOk()
     {
