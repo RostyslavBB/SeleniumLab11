@@ -1,12 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenQA.Selenium;
 
-namespace SeleniumLab11.Pages
+public class CheckboxesPage : BasePage
 {
-    internal class CheckboxesPage
+    private const string URL = "https://the-internet.herokuapp.com/checkboxes";
+    private By Checkboxes => By.CssSelector("input[type='checkbox']");
+
+    public CheckboxesPage(IWebDriver driver) : base(driver) { }
+
+    public void Open() => Driver.Navigate().GoToUrl(URL);
+
+    public void SelectAll()
     {
+        var boxes = Driver.FindElements(Checkboxes);
+        foreach (var cb in boxes)
+            if (!cb.Selected) cb.Click();
+    }
+
+    public bool AllSelected()
+    {
+        var boxes = Driver.FindElements(Checkboxes);
+        return boxes.All(cb => cb.Selected);
     }
 }

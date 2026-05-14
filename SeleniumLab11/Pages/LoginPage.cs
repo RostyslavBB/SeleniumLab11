@@ -1,12 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenQA.Selenium;
 
-namespace SeleniumLab11.Pages
+public class LoginPage : BasePage
 {
-    internal class LoginPage
+    private const string URL = "https://the-internet.herokuapp.com/login";
+
+    private By UsernameField => By.Id("username");
+    private By PasswordField => By.Id("password");
+    private By LoginBtn => By.CssSelector("button[type='submit']");
+    private By FlashMsg => By.Id("flash");
+
+    public LoginPage(IWebDriver driver) : base(driver) { }
+
+    public void Open() => Driver.Navigate().GoToUrl(URL);
+
+    public void Login(string user, string pass)
     {
+        Type(UsernameField, user);
+        Type(PasswordField, pass);
+        Click(LoginBtn);
     }
+
+    public string GetFlashText() => GetText(FlashMsg);
 }
