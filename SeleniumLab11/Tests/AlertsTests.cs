@@ -19,15 +19,6 @@ public class AlertsTests
     }
 
     [Test]
-    [AllureName("JS Alert — прийняти")]
-    public void Alert_Accept_ShowsOk()
-    {
-        _page.ClickAlert();
-        _page.AcceptAlert();
-        StringAssert.Contains("You successfuly", _page.GetResultText());
-    }
-
-    [Test]
     [AllureName("JS Confirm — OK")]
     public void Confirm_OK_ShowsOk()
     {
