@@ -13,7 +13,6 @@ public class WindowsPage : BasePage
 
     public void ClickHere() => Click(ClickHereLink);
 
-    // Чекаємо нову вкладку і переходимо — БЕЗ індексів
     public string SwitchToNewWindow(string originalWindow)
     {
         Wait.Until(d => d.WindowHandles.Count > 1);
